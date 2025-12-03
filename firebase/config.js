@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import dotenv from 'dotenv';
+dotenv.config();
+
+// DEBUG: Verifica las variables
+console.log('Firebase Config - Project ID:', process.env.FIREBASE_PROJECT_ID);
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -8,9 +13,14 @@ const firebaseConfig = {
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.FIREBASE_APP_ID
-}; // configuracion de firebase, los valores se obtienen de las variables de entorno (archivo: .env)
+};
+
+console.log('Initializing Firebase with config:', {
+  projectId: firebaseConfig.projectId,
+  authDomain: firebaseConfig.authDomain
+});
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app)
+const db = getFirestore(app);
 
-export {db}
+export { db };
