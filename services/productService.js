@@ -5,16 +5,31 @@ import {collection, getDoc, getDocs, doc, addDoc, deleteDoc, updateDoc } from 'f
 const collectionName = 'products';
 
 export const getAllProducts = async () => {
-    const productsCol = collection(db, collectionName);
-    const productSnapshot = await getDocs(productsCol);
+    try {
+        const productsCol = collection(db, collectionName);
+        const productSnapshot = await getDocs(productsCol);
 
-    if (productSnapshot.empty) {
-        return [];
+        if (productSnapshot.empty) {
+            return [];
+        }
+        
+        const products = productSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return new Product(
+                doc.id,
+                data.name,
+                data.description,
+                data.price,
+                data.stock,
+                data.category
+            );
+        });
+        
+        return products;
+    } catch (error) {
+        console.error('Error en getAllProducts:', error);
+        throw error;
     }
-    
-    return productSnapshot.docs.map(doc => new Product({id: doc.id, ...doc.data()}));
-    // Mapea cada documento obtenido a una instancia de Product, incluyendo el ID del documento
- 
 }
 
 export const getProductById = async (id) => {
@@ -25,13 +40,22 @@ export const getProductById = async (id) => {
         return null; 
     }
 
-    return new Product({id: productSnapshot.id, ...productSnapshot.data()});
-} // Retorna una instancia de Product si existe, sino null
+    const data = productSnapshot.data();
+    return new Product(
+        productSnapshot.id,
+        data.name,
+        data.description,
+        data.price,
+        data.stock,
+        data.category
+    );
+}
 
 export const createProduct = async (productData) => {
     if (!productData.name || !productData.price) {
         throw new Error('Nombre y precio son obligatorios');
     }
+    
     const productCol = collection(db, collectionName);
     const newProductRef = await addDoc(productCol, {
         name: productData.name,
@@ -41,8 +65,14 @@ export const createProduct = async (productData) => {
         stock: Number(productData.stock || 0)
     });
 
-    return new Product({id: newProductRef.id, ...productData});
-
+    return new Product(
+        newProductRef.id,
+        productData.name,
+        productData.description || '',
+        Number(productData.price),
+        Number(productData.stock || 0),
+        productData.category || ''
+    );
 }
 
 export const deleteProduct = async (id) => {
@@ -58,7 +88,6 @@ export const deleteProduct = async (id) => {
 }
 
 export const updateProduct = async (id, updateData) => {
-
     const productDoc = doc(db, collectionName, id);
     const productSnapshot = await getDoc(productDoc);
 
@@ -68,6 +97,14 @@ export const updateProduct = async (id, updateData) => {
 
     await updateDoc(productDoc, updateData);
     const updatedSnapshot = await getDoc(productDoc);
-    return new Product({id: updatedSnapshot.id, ...updatedSnapshot.data()});
-
+    const data = updatedSnapshot.data();
+    
+    return new Product(
+        updatedSnapshot.id,
+        data.name,
+        data.description,
+        data.price,
+        data.stock,
+        data.category
+    );
 }
