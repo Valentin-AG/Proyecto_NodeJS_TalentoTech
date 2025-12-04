@@ -2,26 +2,23 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
-
 dotenv.config();
 
 import productsRouter from './routes/productsRouter.js';
+import userRoutes from './routes/userRoutes.js'; ;
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-
+app.use(['/users', '/usuarios'], userRoutes);
 app.use(['/products', '/productos'], productsRouter);
 
-app.use((req,res) => {
-    res.status(404).json({error:"ruta no encontrada"})
+// Middleware para rutas no encontradas
+app.use((req, res) => {
+    res.status(404).json({ error: "Ruta no encontrada" });
 });
 
-// DEBUG: Verifica si está leyendo las variables
-console.log('PORT from .env:', process.env.PORT);
-console.log('FIREBASE_API_KEY exists:', !!process.env.FIREBASE_API_KEY);
-
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Servidor corriendo en: http://localhost:${PORT}`));
