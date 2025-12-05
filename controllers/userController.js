@@ -1,7 +1,7 @@
 import * as userService from '../services/userServices.js';
 import jwt from 'jsonwebtoken';
 
-// Obtener todos los usuarios (solo admin)
+
 export const getAllUsers = async (req, res) => {
     try {
         const users = await userService.findAllUsers();
@@ -11,7 +11,7 @@ export const getAllUsers = async (req, res) => {
     }
 }
 
-// Obtener usuario por ID
+
 export const getUserById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -27,7 +27,7 @@ export const getUserById = async (req, res) => {
     }
 }
 
-// Crear usuario (registro)
+
 export const createUser = async (req, res) => {
     try {
         const newUser = await userService.createUser(req.body);
@@ -37,7 +37,7 @@ export const createUser = async (req, res) => {
     }
 }
 
-// Actualizar usuario
+
 export const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -53,7 +53,7 @@ export const updateUser = async (req, res) => {
     }
 }
 
-// Eliminar usuario
+
 export const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -69,7 +69,7 @@ export const deleteUser = async (req, res) => {
     }
 }
 
-// Login de usuario
+
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;

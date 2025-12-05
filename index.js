@@ -15,7 +15,7 @@ app.use(cors());
 app.use(['/users', '/usuarios'], userRoutes);
 app.use(['/products', '/productos'], productsRouter);
 
-// Middleware para rutas no encontradas
+
 app.use((req, res) => {
     res.status(404).json({ error: "Ruta no encontrada" });
 });
